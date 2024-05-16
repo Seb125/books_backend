@@ -21,17 +21,53 @@ class Book(BaseModel):
     description: str
     created_at: datetime
     created_by: str
-    id: int = Field(default=None, description="Optional ID")
+    id: int
 
 
 # Beispielbuchdaten
 books_data = [
-    Book(name="Book 1", description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", created_at=datetime.now().replace(microsecond=0), created_by="User 1", id=0),
-    Book(name="Book 2", description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", created_at=datetime.now().replace(microsecond=0), created_by="User 2", id=1),
-    Book(name="Book 3", description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", created_at=datetime.now().replace(microsecond=0), created_by="User 3", id=2),
-    Book(name="Book 4", description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", created_at=datetime.now().replace(microsecond=0), created_by="User 1", id=3),
-    Book(name="Book 5", description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", created_at=datetime.now().replace(microsecond=0), created_by="User 2", id=4),
-    Book(name="Book 6", description="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", created_at=datetime.now().replace(microsecond=0), created_by="User 3", id=5)
+    Book(
+        name="The Great Gatsby",
+        description="The Great Gatsby is a novel by American writer F. Scott Fitzgerald. Set in the Jazz Age on Long Island, the novel depicts narrator Nick Carraway's interactions with mysterious millionaire Jay Gatsby and Gatsby's obsession to reunite with his former lover, Daisy Buchanan.",
+        created_at=datetime.now().replace(microsecond=0),
+        created_by="User 1",
+        id=0
+    ),
+    Book(
+        name="To Kill a Mockingbird",
+        description="To Kill a Mockingbird is a novel by Harper Lee. It follows the story of young Scout Finch and her brother Jem, and their father, Atticus Finch, who defends a black man accused of raping a white woman.",
+        created_at=datetime.now().replace(microsecond=0),
+        created_by="User 2",
+        id=1
+    ),
+    Book(
+        name="1984",
+        description="1984 is a dystopian novel by George Orwell. It portrays a totalitarian regime where individuality is suppressed and the government exercises control over every aspect of citizens' lives.",
+        created_at=datetime.now().replace(microsecond=0),
+        created_by="User 3",
+        id=2
+    ),
+    Book(
+        name="The Catcher in the Rye",
+        description="The Catcher in the Rye is a novel by J.D. Salinger. It follows the story of Holden Caulfield, a young man who struggles with alienation and disillusionment.",
+        created_at=datetime.now().replace(microsecond=0),
+        created_by="User 1",
+        id=3
+    ),
+    Book(
+        name="Pride and Prejudice",
+        description="Pride and Prejudice is a novel by Jane Austen. It follows the story of Elizabeth Bennet, who navigates issues of class, marriage, and morality in early 19th century England.",
+        created_at=datetime.now().replace(microsecond=0),
+        created_by="User 2",
+        id=4
+    ),
+    Book(
+        name="To the Lighthouse",
+        description="To the Lighthouse is a novel by Virginia Woolf. It explores themes of loss, time, and the complexities of human relationships through the lens of the Ramsay family's annual visit to a lighthouse.",
+        created_at=datetime.now().replace(microsecond=0),
+        created_by="User 3",
+        id=5
+    )
 ]
 
 
