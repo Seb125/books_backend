@@ -23,6 +23,7 @@ macholib @ file:///System/Volumes/Data/SWE/Apps/DT/BuildRoots/BuildRoot7/ActiveB
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
 mdurl==0.1.2
+motor==3.4.0
 orjson==3.10.3
 platformdirs==4.2.1
 pydantic==2.7.1
@@ -30,6 +31,7 @@ pydantic-extra-types==2.7.0
 pydantic-settings==2.2.1
 pydantic_core==2.18.2
 Pygments==2.18.0
+pymongo==4.7.2
 python-dotenv==1.0.1
 python-multipart==0.0.9
 PyYAML==6.0.1
