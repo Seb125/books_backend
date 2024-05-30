@@ -19,7 +19,7 @@ with open('books.json', 'r') as file:
 app = FastAPI()
 
 # MongoDB connection string
-MONGO_DETAILS = "mongodb://localhost:27017"
+MONGO_DETAILS = "mongodb://mongodb:27018"
 
 # Database client
 client = AsyncIOMotorClient(MONGO_DETAILS)
@@ -41,7 +41,7 @@ async def create_item(book: Book):
 # Allow requests from http://localhost:5173
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://books-frontend-1:5173"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
