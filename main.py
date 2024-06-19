@@ -19,7 +19,8 @@ with open('books.json', 'r') as file:
 app = FastAPI()
 
 # MongoDB connection string
-MONGO_DETAILS = "mongodb://mongodb:27018"
+MONGO_DETAILS = "mongodb://books-mongodb-1:27017" 
+
 
 # Database client
 client = AsyncIOMotorClient(MONGO_DETAILS)
@@ -27,6 +28,20 @@ client = AsyncIOMotorClient(MONGO_DETAILS)
 # Database and collection
 database = client.test_db
 collection = database.books
+
+
+# Allow requests from http://localhost:5173
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+def test():
+    return {"Hello": "Mistaaaaa today"}
 
 
 @app.post("/items/", response_model=BookInDB)
@@ -37,15 +52,6 @@ async def create_item(book: Book):
     book_in_db["id"] = str(book_in_db["_id"])
     del book_in_db["_id"]
     return book_in_db
-
-# Allow requests from http://localhost:5173
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://books-frontend-1:5173"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["*"],
-)
 
 
 @app.get('/insert-books')
@@ -94,15 +100,3 @@ async def delete_book(bookId: str):
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-@app.delete('/books/{bookId}')
-async def delete_book(bookId: int):
-    try:
-        # Update the book in the books_data list
-        for index, book in enumerate(books_data):
-            if book.id == bookId:
-                # Delete the book at the found index
-                del books_data[index]
-        return {"message": "Book with ID {book_id} deleted successfully"}
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
