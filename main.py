@@ -41,10 +41,12 @@ app.add_middleware(
 
 @app.get("/")
 def test():
+    myVar = "Mistaaa"
+    print(myVar)
     return {"Hello": "Mistaaaaa today"}
 
 
-@app.post("/items/", response_model=BookInDB)
+@app.post("/items", response_model=BookInDB)
 async def create_item(book: Book):
     book_dict = book.dict()
     result = await collection.insert_one(book_dict)
@@ -62,6 +64,7 @@ async def insert_books():
 
 @app.get('/books', response_model=List[BookInDB])
 async def get_books():
+    print("Hellooooo")
     books = []
     async for book in collection.find():
         book_in_db = book.copy()
