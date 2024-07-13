@@ -9,6 +9,8 @@ from model import Book
 from model import BookInDB
 import json
 from bson import ObjectId
+from auth import router as auth_router
+from database import collection_books, collection_users
 
 
 # Read the JSON file
@@ -18,16 +20,9 @@ with open('books.json', 'r') as file:
 
 app = FastAPI()
 
-# MongoDB connection string
-MONGO_DETAILS = "mongodb://books-mongodb-1:27017" 
+#include authentification routes
+app.include_router(auth_router, prefix="/auth")
 
-
-# Database client
-client = AsyncIOMotorClient(MONGO_DETAILS)
-
-# Database and collection
-database = client.test_db
-collection = database.books
 
 
 # Allow requests from http://localhost:5173
@@ -40,17 +35,21 @@ app.add_middleware(
 )
 
 @app.get("/")
-def test():
-    myVar = "Mistaaa"
-    print(myVar)
+async def test():
+    user = {
+    "email": "myemail@test.com",
+    "password": "myPassword"
+}
+    result = await collection_users.insert_one(user)
+    print(result)
     return {"Hello": "Mistaaaaa today"}
 
 
 @app.post("/items", response_model=BookInDB)
 async def create_item(book: Book):
     book_dict = book.dict()
-    result = await collection.insert_one(book_dict)
-    book_in_db = await collection.find_one({"_id": result.inserted_id})
+    result = await collection_books.insert_one(book_dict)
+    book_in_db = await collection_books.find_one({"_id": result.inserted_id})
     book_in_db["id"] = str(book_in_db["_id"])
     del book_in_db["_id"]
     return book_in_db
@@ -59,14 +58,14 @@ async def create_item(book: Book):
 @app.get('/insert-books')
 async def insert_books():
     for index, book in enumerate(books_data):
-        result = await collection.insert_one(book)
+        result = await collection_books.insert_one(book)
 
 
 @app.get('/books', response_model=List[BookInDB])
 async def get_books():
     print("Hellooooo")
     books = []
-    async for book in collection.find():
+    async for book in collection_books.find():
         book_in_db = book.copy()
         book_in_db["id"] = str(book_in_db["_id"])
         del book_in_db["_id"]
@@ -79,12 +78,10 @@ async def update_book(updated_book: BookInDB):
     try:
         # Convert the BookInDB object to a dictionary
         updated_book_dict = updated_book.dict()
-        
+        print("updated book", updated_book_dict)
         # Extract the id from the dictionary and remove it to avoid updating the id field
         book_id = ObjectId(updated_book_dict.pop('id', None))
-        print(book_id)
-        result = await collection.update_one({'_id': book_id}, {"$set": updated_book_dict})
-        print(result)
+        result = await collection_books.update_one({'_id': book_id}, {"$set": updated_book_dict})
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -96,7 +93,7 @@ async def delete_book(bookId: str):
     try:
 
         book_id = ObjectId(bookId)
-        result = await collection.delete_one({'_id': book_id})
+        result = await collection_books.delete_one({'_id': book_id})
 
     except Exception as e:
         print(f"An error occurred: {e}")
