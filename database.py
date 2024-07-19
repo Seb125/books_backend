@@ -1,5 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-
+from pymongo import MongoClient
+import gridfs
 
 
 
@@ -16,5 +17,8 @@ client = AsyncIOMotorClient(MONGO_DETAILS)
 database = client.test_db
 collection_books = database.books
 collection_users = database.users
+
+# Synchronous client for GridFS
+# GridFS for asynchronous operations
 
 

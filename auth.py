@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from model import User, UserInDB
+from model import User, UserInDB, UserNew
 from database import collection_users
 from typing import Annotated, Union
 from pydantic import BaseModel
@@ -49,13 +49,13 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+async def get_user(db, username: str):
+    user_dict = await db.find_one({"username": username})
+    del user_dict["_id"]
+    return UserInDB(**user_dict)
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
+async def authenticate_user(collection_users, username: str, password: str):
+    user = await get_user(collection_users, username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -82,12 +82,13 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
+        print("lol", username)
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
     except InvalidTokenError:
         raise credentials_exception
-    user_in_db = get_user(fake_users_db, username=token_data.username)
+    user_in_db = await get_user(collection_users, username=token_data.username)
     if user_in_db is None:
         raise credentials_exception
     return User(**user_in_db.dict(exclude={"hashed_password"}))
@@ -105,7 +106,8 @@ async def get_current_active_user(
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    print("This is my form data",form_data.username, form_data.password)
+    user = await authenticate_user(collection_users, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -124,11 +126,35 @@ async def login_for_access_token(
 async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
     return current_user
 
+#register as new user
+@router.post("/register")
+async def insert_user(user: UserNew):
+    try:
+        # Convert the User instance to a dictionary
+        user_dict = user.dict()
+        # hash password
+        hashedPassword = get_password_hash(user_dict["password"])
+        # save user in the database
+        del user_dict["password"]
+        user_dict["hashed_password"] = hashedPassword
+        
+        result = await collection_users.insert_one(user_dict)
+        user_in_db = await collection_users.find_one({"_id": result.inserted_id})
+        user_in_db["id"] = str(user_in_db["_id"])
+        del user_in_db["_id"]
+        del user_in_db["hashed_password"]
+        print(user_in_db)
+        return user_in_db
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
+        
 
-
-
-
+# verify if token is valid
+@router.get("/verify")
+async def verify_token(current_user: Annotated[User, Depends(get_current_active_user)]):
+    return current_user
 
 
 
@@ -140,21 +166,5 @@ async def read_users_me(current_user: Annotated[User, Depends(get_current_active
 
 #Annotated is used to attach metadata to type hints, here it combiens type hint with dependency injection
 #Here, Annotated is a way to say "this is a str that is obtained via Depends(oauth2_scheme)."
-@router.get("/getitems")
-async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
-    return {"token": token}
 
-@router.get("/register")
-async def test_function(user: User):
-    user_dict = user.dict()
-    # Do some validation checks here on email and password
 
-    # hash password
-    hashedPassword = ""
-    # save user in the database
-
-    user_dict["password"] = hashedPassword
-
-    result = await collection_users.insert_one(user_dict)
-    
-    return {"test": result}
