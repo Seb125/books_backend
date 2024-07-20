@@ -27,5 +27,12 @@ class Book(BaseModel):
 class BookInDB(Book):
     id:str
 
+class Message(BaseModel):
+    role: str
+    msg: str
+    time: str
+
 class Request(BaseModel):
-    message: str
+    message: List[Message]
+
+

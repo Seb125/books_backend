@@ -11,21 +11,26 @@ def test():
     return {"message": "test"}
 
 @router.post("/lama")
-def api_request(message: Request):
-    print(message.message)
-    print("after breakpoint")
+def api_request(request: Request):
+    print("here")
     # Initialize the SDK
     llama = LlamaAPI(os.getenv("API_KEY"))
-
+    # prepare chat history for API request
+    
+    myFormattedList = [{"role": "user" if msg.role == "ME" else "assistant", "content": msg.msg} for msg in request.message]
+    print(myFormattedList)
     # Build the API request
     api_request_json = {
-        "messages": [
-            {"role": "user", "content": message.message},
-        ],
-        
+        "messages": myFormattedList,
         "stream": False,
         "function_call": "get_current_weather",
+        "response_format": {
+        "title": "string",
+        "author": "string",
+        "abstract": "string"
     }
+    }
+    
 
     # Execute the Request
     try:
