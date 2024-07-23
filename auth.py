@@ -11,7 +11,7 @@ from passlib.context import CryptContext
 
 SECRET_KEY = "823436f933842b8f37bec808e160ea7d0d990138df12081eb165280490de22cc"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 fake_users_db = {
     "johndoe": {

@@ -3,6 +3,10 @@ import json
 from llamaapi import LlamaAPI
 from model import Request
 import os
+from auth import get_current_active_user;
+from typing import Annotated
+from model import User
+
 
 router = APIRouter()
 
@@ -11,7 +15,7 @@ def test():
     return {"message": "test"}
 
 @router.post("/lama")
-def api_request(request: Request):
+def api_request(request: Request, current_user: Annotated[User, Depends(get_current_active_user)]):
     print("here")
     # Initialize the SDK
     llama = LlamaAPI(os.getenv("API_KEY"))

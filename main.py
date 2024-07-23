@@ -49,7 +49,6 @@ async def test(current_user: Annotated[User, Depends(get_current_active_user)]):
 
 @app.post("/items", response_model=BookInDB)
 async def create_item(book: Book, current_user: Annotated[User, Depends(get_current_active_user)]):
-    print("kkkkkkk", current_user)
     book_dict = book.dict()
     result = await collection_books.insert_one(book_dict)
     book_in_db = await collection_books.find_one({"_id": result.inserted_id})
@@ -59,7 +58,6 @@ async def create_item(book: Book, current_user: Annotated[User, Depends(get_curr
     # add book to user
     res = await collection_users.find_one_and_update({'username': current_user.username}, {'$push': {'books': book_id}},
         return_document=True )
-    print(res)
     return book_in_db
 
 
